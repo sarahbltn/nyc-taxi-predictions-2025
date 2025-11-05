@@ -1,0 +1,6 @@
+artifact_location: file:///C:/Users/sarah/apps/sem_5/pcd/nyc-taxi-predictions-2025/training_pipeline/mlruns/165388815854435768
+creation_time: 1762233544199
+experiment_id: '165388815854435768'
+last_update_time: 1762233544199
+lifecycle_stage: active
+name: nyc-taxi-experiment-prefect
