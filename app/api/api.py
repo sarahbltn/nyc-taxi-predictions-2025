@@ -5,8 +5,9 @@ from pydantic import BaseModel
 from mlflow import MlflowClient
 from dotenv import load_dotenv
 import os
+import pandas as pd
+import xgboost as xgb
 
-# Cargar variables de entorno
 load_dotenv(override=True)  # Carga las variables del archivo .env
 
 mlflow.set_tracking_uri("databricks")
@@ -41,23 +42,31 @@ champion_model = mlflow.pyfunc.load_model(
     model_uri=model_uri
 )
 
-# Función de preprocesamiento
 def preprocess(input_data):
 
     input_dict = {
         'PU_DO': input_data.PULocationID + "_" + input_data.DOLocationID,
         'trip_distance': input_data.trip_distance,
     }
+    X = dv.transform([input_dict])
 
-    return dv.transform(input_dict)
+    # Names depend on sklearn version
+    try:
+        cols = dv.get_feature_names_out()
+    except AttributeError:
+        cols = dv.get_feature_names()
+
+    # 
+    X_df = pd.DataFrame(X.toarray(), columns=cols)
+
+    return X_df
 
 def predict(input_data):
 
     X_val = preprocess(input_data)
 
-    return "4" #champion_model.predict(X_val)
+    return champion_model.predict(X_val)
 
-# Definir la aplicación FastAPI
 app = FastAPI()
 
 class InputData(BaseModel):
@@ -70,5 +79,3 @@ class InputData(BaseModel):
 def predict_endpoint(input_data: InputData):
     result = predict(input_data)[0]
     return {"prediction": float(result)}
-
-

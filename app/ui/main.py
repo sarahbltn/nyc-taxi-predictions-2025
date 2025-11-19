@@ -12,8 +12,8 @@ st.sidebar.header('User Input Parameters')
 def user_input_features():
     PU = st.sidebar.text_input("PU Location ID", "80") # El 80 es un valor por default
     DO = st.sidebar.text_input("DO Location ID", "60") # El 60 es un valor por default
-    trip_distance = st.sidebar.number_input("Trip Distance", value=10, min_value=1, max_value=100)
-
+    trip_distance = st.sidebar.number_input("Trip Distance", value=10.0, min_value=0.1, max_value=100.0)
+    
     input_dict = {
         'PULocationID': PU,
         'DOLocationID': DO,
